@@ -122,6 +122,26 @@ const createDonutArcPath = (startAngle, endAngle) => {
   ].join(" ");
 };
 
+const getDraftDisplayName = (draft) =>
+  draft.name ||
+  draft.draftName ||
+  draft.fileName ||
+  draft.filename ||
+  draft.clientName ||
+  draft.company ||
+  "Unnamed draft";
+
+const getDraftFileType = (draft) => {
+  const explicitType = draft.fileType || draft.type || draft.mimeType;
+  const fileName = draft.fileName || draft.filename || "";
+  const extension = fileName.includes(".") ? fileName.split(".").pop() : "";
+
+  if (explicitType) return String(explicitType).replace("text/", "").toUpperCase();
+  if (extension) return extension.toUpperCase();
+  if (draft.csv || draft.parsedCSV || draft.csvData) return "CSV";
+  return "DRAFT";
+};
+
 export default function SystemMonitorAdmin() {
   const [data, setData] = useState(initialData);
   const [loading, setLoading] = useState(true);
@@ -211,7 +231,6 @@ export default function SystemMonitorAdmin() {
           ]
         : baseItems;
 
-    
     const total = items.reduce((sum, item) => sum + item.count, 0);
     let currentAngle = 0;
     const segments = items.map((item) => {
@@ -241,6 +260,20 @@ export default function SystemMonitorAdmin() {
   }, [data.drafts]);
 
   const lastUpdated = new Date().toLocaleString();
+  const draftCheckerGroups = useMemo(
+    () =>
+      payrollActivity.items.map((item) => ({
+        ...item,
+        drafts: data.drafts
+          .filter((draft) => getPayrollActivityKey(draft) === item.key)
+          .map((draft) => ({
+            id: draft.id || `${getDraftDisplayName(draft)}-${getDraftStatus(draft)}`,
+            name: getDraftDisplayName(draft),
+            fileType: getDraftFileType(draft),
+          })),
+      })),
+    [data.drafts, payrollActivity.items]
+  );
 
   return (
     <IonPage id="main-content">
@@ -340,16 +373,42 @@ export default function SystemMonitorAdmin() {
                       </div>
                     </div>
 
-                    <div className="admin-donut-legend">
-                      {payrollActivity.items.map((item) => (
-                        <div className="admin-donut-legend-item" key={item.key}>
-                          <span className={`admin-donut-dot admin-donut-dot-${item.key}`} />
-                          <div>
-                            <strong>{item.label}</strong>
-                            <p>{item.count} drafts - {item.percent}%</p>
+                    <div className="admin-payroll-activity-details">
+                      <div className="admin-donut-legend">
+                        {payrollActivity.items.map((item) => (
+                          <div className="admin-donut-legend-item" key={item.key}>
+                            <span className={`admin-donut-dot admin-donut-dot-${item.key}`} />
+                            <div>
+                              <strong>{item.label}</strong>
+                              <p>{item.count} drafts - {item.percent}%</p>
+                            </div>
                           </div>
-                        </div>
-                      ))}
+                        ))}
+                      </div>
+
+                      <div className="admin-draft-checker">
+                        <h3>Draft Checker</h3>
+                        {draftCheckerGroups.map((group) => (
+                          <div className="admin-draft-checker-group" key={group.key}>
+                            <div className="admin-draft-checker-heading">
+                              <span className={`admin-donut-dot admin-donut-dot-${group.key}`} />
+                              <strong>{group.label}</strong>
+                            </div>
+                            {group.drafts.length > 0 ? (
+                              <div className="admin-draft-checker-list">
+                                {group.drafts.map((draft) => (
+                                  <div className="admin-draft-checker-item" key={draft.id}>
+                                    <span>{draft.name}</span>
+                                    <strong>{draft.fileType}</strong>
+                                  </div>
+                                ))}
+                              </div>
+                            ) : (
+                              <p className="admin-draft-checker-empty">No drafts</p>
+                            )}
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
 
