@@ -239,8 +239,8 @@
   border: 1px solid #d8edf2;
   border-radius: 8px;
   display: grid;
-  gap: 18px;
-  grid-template-columns: minmax(180px, 240px) minmax(0, 1fr);
+  gap: 24px;
+  grid-template-columns: minmax(180px, 260px) minmax(0, 1fr);
   padding: 14px;
 }
 
@@ -317,6 +317,12 @@
   gap: 12px;
 }
 
+.admin-payroll-activity-details {
+  display: grid;
+  gap: 22px;
+  grid-template-columns: minmax(180px, 260px) minmax(220px, 1fr);
+}
+
 .admin-donut-legend-item {
   align-items: center;
   display: grid;
@@ -362,6 +368,87 @@
 
 .admin-donut-dot-other {
   background: #7bb9c8;
+}
+
+.admin-draft-checker {
+  align-self: stretch;
+  background: #ffffff;
+  border: 1px solid #d8edf2;
+  border-radius: 8px;
+  display: grid;
+  gap: 12px;
+  max-height: 280px;
+  overflow-y: auto;
+  padding: 12px;
+}
+
+.admin-draft-checker h3 {
+  color: #0a3f59;
+  font-family: Poppins, sans-serif;
+  font-size: 1rem;
+  margin: 0;
+}
+
+.admin-draft-checker-group {
+  border-top: 1px solid #e9fbfc;
+  display: grid;
+  gap: 8px;
+  padding-top: 10px;
+}
+
+.admin-draft-checker-heading {
+  align-items: center;
+  display: grid;
+  gap: 8px;
+  grid-template-columns: 12px minmax(0, 1fr);
+}
+
+.admin-draft-checker-heading strong {
+  color: #0a3f59;
+  font-family: Poppins, sans-serif;
+  font-size: 0.88rem;
+}
+
+.admin-draft-checker-list {
+  display: grid;
+  gap: 6px;
+}
+
+.admin-draft-checker-item {
+  align-items: center;
+  background: #f8fdfe;
+  border: 1px solid #e9fbfc;
+  border-radius: 6px;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  padding: 8px 10px;
+}
+
+.admin-draft-checker-item span,
+.admin-draft-checker-item strong,
+.admin-draft-checker-empty {
+  font-family: Poppins, sans-serif;
+  font-size: 0.82rem;
+}
+
+.admin-draft-checker-item span {
+  color: #0a3f59;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-draft-checker-item strong {
+  background: #e9fbfc;
+  border-radius: 999px;
+  color: #0a3f59;
+  padding: 3px 8px;
+}
+
+.admin-draft-checker-empty {
+  color: #5c7782;
+  margin: 0 0 0 20px;
 }
 
 .admin-chart-timestamp {
@@ -419,14 +506,14 @@
     padding-right: 32px;
   }
 
-  
   .admin-form-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 680px) {
-  .admin-payroll-donut-chart {
+  .admin-payroll-donut-chart,
+  .admin-payroll-activity-details {
     grid-template-columns: 1fr;
   }
 }
